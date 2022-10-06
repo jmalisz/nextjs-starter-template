@@ -1,14 +1,25 @@
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider } from "@chakra-ui/react";
 
-import theme from '../theme'
-import { AppProps } from 'next/app'
+import { AppProps } from "next/app";
+import { theme } from "config/theme";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-function MyApp({ Component, pageProps }: AppProps) {
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: process.env.NODE_ENV === "production",
+      retry: process.env.NODE_ENV === "production" ? 3 : false,
+      staleTime: 3 * 1000 * 60,
+    },
+  },
+});
+
+export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider theme={theme}>
-      <Component {...pageProps} />
-    </ChakraProvider>
-  )
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider theme={theme}>
+        <Component {...pageProps} />
+      </ChakraProvider>
+    </QueryClientProvider>
+  );
 }
-
-export default MyApp
