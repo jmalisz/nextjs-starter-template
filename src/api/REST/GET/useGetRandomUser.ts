@@ -2,7 +2,7 @@
 
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { z } from "zod";
-import { QueryKey, useRestFetcher } from "../useRestFetcher";
+import { QueryKey, useRestFetcher } from "api/REST/useRestFetcher";
 
 const requestShape = z.object({
   searchParams: z

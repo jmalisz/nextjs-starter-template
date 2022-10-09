@@ -12,13 +12,13 @@ export type QueryKey = {
   searchParams?: RequestShape["searchParams"];
 }[];
 
-interface UseRestFetcherProps<TRequestShape extends RequestShape, ResponseShape> {
+interface UseGraphQlFetcherProps<TRequestShape extends RequestShape, ResponseShape> {
   options?: RequestInit;
   requestShape?: z.ZodType<TRequestShape>;
   responseShape: z.ZodType<ResponseShape>;
 }
 
-interface UseRestFetcherReturnProps<TRequestShape extends RequestShape> {
+interface UseGraphQlFetcherReturnProps<TRequestShape extends RequestShape> {
   url: string;
   params?: TRequestShape["params"];
   searchParams?: TRequestShape["searchParams"];
@@ -26,11 +26,12 @@ interface UseRestFetcherReturnProps<TRequestShape extends RequestShape> {
   signal?: AbortSignal;
 }
 
-export const useRestFetcher = <TRequestShape extends RequestShape, ResponseShape>({
+// TODO: Add GraphQL support
+export const useGraphQlFetcher = <TRequestShape extends RequestShape, ResponseShape>({
   options,
   requestShape,
   responseShape,
-}: UseRestFetcherProps<TRequestShape, ResponseShape>) => {
+}: UseGraphQlFetcherProps<TRequestShape, ResponseShape>) => {
   if (!process.env.NEXT_PUBLIC_REST_API_URL) {
     throw new Error("process.env.NEXT_PUBLIC_REST_API_URL is undefined");
   }
@@ -41,7 +42,7 @@ export const useRestFetcher = <TRequestShape extends RequestShape, ResponseShape
     searchParams,
     payload,
     signal,
-  }: UseRestFetcherReturnProps<TRequestShape>) => {
+  }: UseGraphQlFetcherReturnProps<TRequestShape>) => {
     if (requestShape) {
       requestShape.parse({
         params,
