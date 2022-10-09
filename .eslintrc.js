@@ -8,8 +8,9 @@ module.exports = {
     "unicorn",
   ],
   extends: [
-    "airbnb-base",
-    "airbnb-typescript/base",
+    "airbnb",
+    "airbnb-typescript",
+    "airbnb/hooks",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:eslint-comments/recommended",
@@ -38,6 +39,12 @@ module.exports = {
     "react/destructuring-assignment": "off",
     // No jsx extension: https://github.com/facebook/create-react-app/issues/87#issuecomment-234627904
     "react/jsx-filename-extension": "off",
+    "react/jsx-props-no-spreading": [
+      "warn",
+      {
+        exceptions: ["Component"],
+      },
+    ],
     "react/jsx-sort-props": [
       "error",
       {
@@ -51,13 +58,16 @@ module.exports = {
     ],
     // Use function hoisting to improve code readability
     "no-use-before-define": ["error", { functions: false, classes: true, variables: true }],
+    // Breaks conditional rendering
+    "consistent-return": "off",
     // Allow most functions to rely on type inference. If the function is exported, then `@typescript-eslint/explicit-module-boundary-types` will ensure it's typed.
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-use-before-define": [
       "error",
       { functions: false, classes: true, variables: true, typedefs: true },
     ],
-    // Airbnb prefers forEach
+    // Common abbreviations are known and readable
+    "unicorn/prevent-abbreviations": "off",
     "unicorn/no-array-for-each": "off",
     // Use PascalCase for components/pages and camelCase for rest
     "unicorn/filename-case": [
@@ -76,7 +86,7 @@ module.exports = {
       { allowSameFolder: true, rootDir: "src" },
     ],
   },
-  ignoreFiles: ["eslintrc.js"],
+  ignorePatterns: [".eslintrc.js"],
   overrides: [
     // Allow CJS until ESM support improves
     {
