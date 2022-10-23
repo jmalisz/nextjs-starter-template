@@ -5,6 +5,7 @@ module.exports = {
     "jest",
     "no-relative-import-paths",
     "promise",
+    "simple-import-sort",
     "unicorn",
   ],
   extends: [
@@ -30,11 +31,15 @@ module.exports = {
     project: "./tsconfig.json",
   },
   rules: {
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    // https://basarat.gitbook.io/typescript/main-1/defaultisbad
+    "import/no-default-export": "error",
+    // It's not accurate in the monorepo style
+    "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "off",
     // Too restrictive, writing ugly code to defend against a very unlikely scenario: https://eslint.org/docs/rules/no-prototype-builtins
     "no-prototype-builtins": "off",
-    // https://basarat.gitbook.io/typescript/main-1/defaultisbad
-    "import/prefer-default-export": "off",
-    "import/no-default-export": "error",
     // Too restrictive: https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/destructuring-assignment.md
     "react/destructuring-assignment": "off",
     // No jsx extension: https://github.com/facebook/create-react-app/issues/87#issuecomment-234627904
@@ -46,7 +51,7 @@ module.exports = {
       },
     ],
     "react/jsx-sort-props": [
-      "error",
+      "warn",
       {
         callbacksLast: true,
         ignoreCase: true,
@@ -56,6 +61,7 @@ module.exports = {
         shorthandLast: true,
       },
     ],
+    "react/require-default-props": "off",
     // Use function hoisting to improve code readability
     "no-use-before-define": ["error", { functions: false, classes: true, variables: true }],
     // Breaks conditional rendering
@@ -79,8 +85,6 @@ module.exports = {
         },
       },
     ],
-    // It's not accurate in the monorepo style
-    "import/no-extraneous-dependencies": "off",
     "no-relative-import-paths/no-relative-import-paths": [
       "error",
       { allowSameFolder: true, rootDir: "src" },
