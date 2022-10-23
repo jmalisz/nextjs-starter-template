@@ -1,5 +1,13 @@
-import { useColorMode, IconButton, Container, Box, Heading } from "@chakra-ui/react";
-import { SunIcon, MoonIcon } from "@chakra-ui/icons";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Container,
+  Flex,
+  Heading,
+  IconButton,
+  useColorMode,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 
 function ColorModeSwitch() {
@@ -9,36 +17,51 @@ function ColorModeSwitch() {
   return (
     <IconButton
       aria-label="Toggle Theme"
-      colorScheme="green"
       icon={isDark ? <SunIcon /> : <MoonIcon />}
-      position="fixed"
-      right={4}
-      top={4}
       onClick={toggleColorMode}
     />
   );
 }
 
 export function MainLayout({ children }: PropsWithChildren) {
+  const footerColor = useColorModeValue("gray.300", "gray.600");
+
   return (
-    <>
+    <Flex direction="column" height="100vh">
       <Box
         as="header"
-        background="white"
         borderBottom="1px"
         borderBottomColor="gray.200"
         height="80px"
         position="sticky"
         top="0"
       >
-        <Container display="flex" justifyContent="space-between" maxW="container.xl" padding={4}>
-          <Heading as="h1" color="teal.700">
-            Redwood Blog
+        <Container
+          alignItems="center"
+          display="flex"
+          justifyContent="space-between"
+          maxW="container.xl"
+          padding={4}
+        >
+          <Heading as="h1" color="blue.500">
+            NextJS starter template
           </Heading>
           <ColorModeSwitch />
         </Container>
       </Box>
-      <Container>{children}</Container>
-    </>
+      <Container flexGrow={1} maxW="container.lg" padding={4}>
+        {children}
+      </Container>
+      <Container
+        as="footer"
+        color={footerColor}
+        display="flex"
+        justifyContent="center"
+        maxW="container.xl"
+        padding={4}
+      >
+        Made by Jakub Maliszewski
+      </Container>
+    </Flex>
   );
 }

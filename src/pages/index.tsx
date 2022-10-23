@@ -1,21 +1,40 @@
-// TODO: Add full typing to useGetRandomUser
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { Avatar, Grid, Text, useColorModeValue } from "@chakra-ui/react";
+import { ResponseShape, useGetRandomUser } from "api/REST/GET/useGetRandomUser";
+import { GenericDataCell, GenericSuccessStateProps } from "components/GenericDataCell";
 
-import { Hero } from "components/Hero";
-import { useGetRandomUser } from "api/REST/GET/useGetRandomUser";
-import { Container } from "@chakra-ui/react";
+function PersonCard<TData extends ResponseShape>({ data }: GenericSuccessStateProps<TData>) {
+  const person = data.results[0];
 
-export default function Index() {
-  const { data } = useGetRandomUser();
+  const fullName = `${person.name.first} ${person.name.last}`;
+  const picture = person.picture.large;
 
-  if (!data) return;
+  const background = useColorModeValue("gray.200", "gray.700");
 
   return (
-    <Container height="100vh">
-      <Hero title={data.results[0].name.first} />
-    </Container>
+    <Grid
+      background={background}
+      border="1px solid"
+      borderColor="blue.500"
+      borderRadius={4}
+      boxShadow="base"
+      boxSize={400}
+      gridTemplateColumns="1fr auto"
+      gridTemplateRows="auto 1fr"
+      margin="auto"
+      padding={4}
+      templateAreas={`
+        "title avatar"
+        "description description"
+      `}
+    >
+      <Text gridArea="title">{fullName}</Text>
+      <Avatar gridArea="avatar" name={fullName} size="2xl" src={picture} />
+    </Grid>
   );
 }
-/* eslint-enable @typescript-eslint/no-unsafe-member-access */
-/* eslint-enable @typescript-eslint/no-unsafe-assignment */
+
+export default function Index() {
+  const queryResult = useGetRandomUser();
+
+  return <GenericDataCell queryResult={queryResult} SuccessState={PersonCard} />;
+}
