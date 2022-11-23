@@ -66,7 +66,6 @@ export function GenericDataCell<TData>({
       return <MissingState />;
     }
     case isSuccess: {
-      // eslint-disable-next-line react/jsx-props-no-spreading
       return <SuccessState data={data as TData} />;
     }
     default: {
