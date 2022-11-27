@@ -39,6 +39,7 @@ type GenericDataCellProps<TData> = {
   MissingState?: FunctionComponent;
   SuccessState?: FunctionComponent<GenericSuccessStateProps<TData>>;
   queryResult: UseQueryResult<TData, Error>;
+  useIsFetching?: boolean;
 };
 
 export function GenericDataCell<TData>({
@@ -47,6 +48,7 @@ export function GenericDataCell<TData>({
   MissingState = GenericMissingState,
   SuccessState = GenericSuccessState,
   queryResult,
+  useIsFetching,
 }: GenericDataCellProps<TData>) {
   const { error, data, isError, isFetching, isLoading, isSuccess } = queryResult;
 
@@ -59,7 +61,7 @@ export function GenericDataCell<TData>({
     case isError: {
       return <ErrorState error={error as Error} />;
     }
-    case isInitialLoad: {
+    case useIsFetching ? isFetching : isInitialLoad: {
       return <LoadingState />;
     }
     case isMissing: {
