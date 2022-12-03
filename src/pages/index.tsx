@@ -1,107 +1,40 @@
-import { EmailIcon, PhoneIcon } from "@chakra-ui/icons";
-import {
-  Avatar,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  GridProps,
-  Heading,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import { ResponseShape, useGetRandomUser } from "api/REST/GET/useGetRandomUser";
-import { GenericDataCell, GenericSuccessStateProps } from "components/GenericDataCell";
+import { Box, Flex } from "@chakra-ui/react";
+import { useGetRandomUser } from "api/REST/GET/useGetRandomUser";
+import { ApiInteractionInterface } from "components/ApiInteractionInterface";
+import { GenericDataCell } from "components/GenericDataCell";
+import { PersonCard } from "components/PersonCard";
 import { useState } from "react";
 
-const moreInfoGrid: GridProps = {
-  gridTemplateRows: "1fr 152px",
-  rowGap: 4,
-};
+export default function Index() {
+  const [refetchInterval, setRefetchInterval] = useState(0);
+  const [useRefetchInterval, setUseRefetchInterval] = useState(false);
+  const [useHardLoadingState, setUseHardLoadingState] = useState(false);
 
-function PersonCard<TData extends ResponseShape>({ data }: GenericSuccessStateProps<TData>) {
-  const [showMoreInfo, setShowMoreInfo] = useState(false);
-
-  const background = useColorModeValue("gray.200", "gray.700");
-
-  const person = data.results[0];
-
-  const picture = person.picture.large;
-  const fullName = `${person.name.first} ${person.name.last}`;
-  const nationality = person.location.country;
-  const address = `${person.location.state}, ${person.location.city}, ${person.location.street.name} ${person.location.street.number}`;
-  const {
-    cell,
-    email,
-    gender,
-    dob: { date: dateOfBirth, age },
-  } = person;
+  const queryResult = useGetRandomUser({
+    queryOptions: {
+      refetchInterval: useRefetchInterval ? refetchInterval : 0,
+    },
+  });
 
   return (
-    <Grid
-      background={background}
-      border="1px solid"
-      borderColor="blue.500"
-      borderRadius={4}
-      boxShadow="base"
-      columnGap={4}
-      margin="auto"
-      minWidth={400}
-      padding={4}
-      rowGap={0}
-      templateColumns="1fr auto"
-      templateRows="1fr 0px"
-      width="fit-content"
-      sx={{
-        transition: "1s ease-in-out",
-      }}
-      templateAreas={`
-        "avatar title"
-        "description description"
-      `}
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      {...(showMoreInfo ? moreInfoGrid : {})}
-    >
-      <Avatar gridArea="avatar" name={fullName} size="2xl" src={picture} />
-      <GridItem area="title" display="flex" flexDir="column" gap={2}>
-        <Heading as="h2">{fullName}</Heading>
-        <Flex align="center" gap="2">
-          <EmailIcon />
-          <Text>{email}</Text>
-        </Flex>
-        <Flex align="center" gap="2">
-          <PhoneIcon />
-          <Text>{cell}</Text>
-        </Flex>
-        <Button variant="ghost" zIndex="dropdown" onClick={() => setShowMoreInfo((prev) => !prev)}>
-          {showMoreInfo ? "Less info" : "More info"}
-        </Button>
-      </GridItem>
-      <GridItem
-        area="description"
-        display="flex"
-        flexDir="column"
-        gap={2}
-        sx={{
-          position: "relative",
-          transform: showMoreInfo ? "" : "translate(0px, -152px)",
-          opacity: showMoreInfo ? "1" : "0",
-          visibility: showMoreInfo ? "visible" : "hidden",
-          transition: "1s ease-in-out",
-        }}
-      >
-        <Text>Gender: {gender}</Text>
-        <Text>Date of birth: {dateOfBirth}</Text>
-        <Text>Age: {age}</Text>
-        <Text>Nationality: {nationality}</Text>
-        <Text>Address: {address}</Text>
-      </GridItem>
-    </Grid>
+    <Flex align="center" direction="column" gap={4} height="100%" justify="center">
+      {/* Prevent jumping with height */}
+      <Box height={362}>
+        <GenericDataCell
+          queryResult={queryResult}
+          SuccessState={PersonCard}
+          useIsFetching={useHardLoadingState}
+        />
+      </Box>
+      <ApiInteractionInterface
+        refetch={queryResult.refetch}
+        refetchInterval={refetchInterval}
+        setRefetchInterval={setRefetchInterval}
+        setUseHardLoadingState={setUseHardLoadingState}
+        setUseRefetchInterval={setUseRefetchInterval}
+        useHardLoadingState={useHardLoadingState}
+        useRefetchInterval={useRefetchInterval}
+      />
+    </Flex>
   );
-}
-
-export default function Index() {
-  const queryResult = useGetRandomUser();
-
-  return <GenericDataCell queryResult={queryResult} SuccessState={PersonCard} />;
 }
